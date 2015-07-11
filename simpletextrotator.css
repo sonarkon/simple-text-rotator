@@ -10,11 +10,6 @@
   -ms-transform: rotateX(0) rotateY(0) rotateZ(0);
   -o-transform: rotateX(0) rotateY(0) rotateZ(0);
   transform: rotateX(0) rotateY(0) rotateZ(0);
-  -webkit-transition: 0.5s;
-  -moz-transition: 0.5s;
-  -ms-transition: 0.5s;
-  -o-transition: 0.5s;
-  transition: 0.5s;
   -webkit-transform-origin-x: 50%;
 }
 

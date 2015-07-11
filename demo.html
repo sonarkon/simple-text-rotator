@@ -155,33 +155,35 @@
 	  $(document).ready(function(){
 			$(".demo1 .rotate").textrotator({
         animation: "fade",
-        speed: 1000
+        speed: 1500,
+        startIndex: 2,
+        delay: 2000
       });
       $(".demo2 .rotate").textrotator({
+        speed: 800,
         animation: "flip",
-        speed: 1250
+        shuffle: true
       });
       $(".demo3 .rotate").textrotator({
         animation: "flipCube",
-        speed: 1500
+
       });
       $(".demo4 .rotate").textrotator({
         animation: "flipUp",
-        speed: 1750
+        delay: 750
       });
       $(".demo5 .rotate").textrotator({
         animation: "spin",
-        speed: 2000
+        speed: 1450
       });
 		});
-		
 	</script>
 </head>
 <body>
   <div class="wrapper">
-    <h1>jQuery Super Simple Text Rotator by Pete R.</h1>
+    <h1>jQuery Super Simple Text Rotator</h1>
     <h2>Add a super simple rotating text to your website with little to no markup</h2>
-    <p class="credit">Created by <a href="http://www.thepetedesign.com">Pete R.</a>, Founder of <a href="http://www.bucketlistly.com" target="_blank">BucketListly</a></p>
+    <p class="credit">Created by <a href="http://www.thepetedesign.com">Pete R.</a>, Founder of <a href="http://www.bucketlistly.com" target="_blank">BucketListly</a><br> Modified and Extended by <a href="http://derekortiz.net">Derek Ortiz</a></p>
     <p class="pointer">Turn this:</p>
     <pre><code>Super &lt;span class="rotate"&gt;Simple, Customizable, Light Weight, Easy&lt;/span&gt; Text Rotator with Style</code></pre>
 	  <p class="pointer">into these..</p>

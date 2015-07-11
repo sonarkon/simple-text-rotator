@@ -1,168 +1,222 @@
 /* ===========================================================
- * jquery-simple-text-rotator.js v1
+ * jquery-simple-html()-rotator.js v1
  * ===========================================================
- * Copyright 2013 Pete Rojwongsuriya.
+ * Copyright 2013 Pete Rojwongsuriya. Modified and Extended by Derek Ortiz
  * http://www.thepetedesign.com
  *
  * A very simple and light weight jQuery plugin that 
- * allows you to rotate multiple text without changing 
+ * allows you to rotate multiple html() without changing 
  * the layout
- * https://github.com/peachananr/simple-text-rotator
+ * https://github.com/derekortiz/simple-html()-rotator
  *
  * ========================================================== */
 
 !function($){
+
+  var _Util = {
+    random: function(max){
+      return Math.floor(Math.random() * (max + 1)); // rand * (max-min + 1) + min (min is 0)
+    },
+
+    getNextIndex: function(shuffleBool, currIndex, length) {
+      if(shuffleBool) {
+        var newIndex = _Util.random(length-1);
+        while(newIndex === currIndex) {
+          newIndex = _Util.random(length-1);
+        }
+        return newIndex;
+      } else {
+        return (currIndex + 1) % length;
+      }
+    },
+
+    createStyleTag: function(styleId) {
+      if($("#" + styleId).length === 0 ) {
+        $("head").append("<style id='"+styleId+"' type='text/css'></style>");
+      }
+    },
+
+    addStyles: function(speed, styleId, thisSelector) {
+      var classStr = thisSelector + " .rotating";
+      $("#"+styleId).append(
+        thisSelector + " .rotating {"
+        +"-webkit-transition:" + speed/1000+"s;"
+        +"-moz-transition:" + speed/1000+"s;"
+        +"-ms-transition:" + speed/1000+"s;"
+        +"-o-transition:" + speed/1000+"s;"
+        +"transition:" + speed/1000+"s;"
+        +"}"
+      );
+    }
+  };
   
   var defaults = {
-		animation: "dissolve",
-		separator: ",",
-		speed: 2000
-	};
-	
-	$.fx.step.textShadowBlur = function(fx) {
+    animation: "fade",
+    separator: ",",
+    delay: 1500,
+    shuffle: false,
+    startIndex: 0,
+    speed: 500,
+    styleId: "simple-text-rotator-styles"
+  };
+  
+  $.fx.step.textShadowBlur = function(fx) {
     $(fx.elem).prop('textShadowBlur', fx.now).css({textShadow: '0 0 ' + Math.floor(fx.now) + 'px black'});
   };
-	
-  $.fn.textrotator = function(options){
+  
+  $.fn.textrotator = function(options) {
     var settings = $.extend({}, defaults, options);
+
+    _Util.createStyleTag(settings.styleId);
+    _Util.addStyles(settings.speed, settings.styleId, $(this).selector);
     
     return this.each(function(){
-      var el = $(this)
-      var array = [];
-      $.each(el.text().split(settings.separator), function(key, value) { 
+      var el = $(this),
+          array = [],
+          intervalSpeed = settings.delay + settings.speed,
+          length,
+          ind;
+      $.each(el.html().split(settings.separator), function(key, value) { 
         array.push(value); 
       });
-      el.text(array[0]);
+      length = array.length;
+      ind = settings.startIndex % length;
+      el.html(array[ind]);
       
-      // animation option
       var rotate = function() {
-        switch (settings.animation) { 
+        // animation option
+        switch (settings.animation) {
+
           case 'dissolve':
-            el.animate({
-              textShadowBlur:20,
-              opacity: 0
-            }, 500 , function() {
-              index = $.inArray(el.text(), array)
-              if((index + 1) == array.length) index = -1
-              el.text(array[index + 1]).animate({
-                textShadowBlur:0,
-                opacity: 1
-              }, 500 );
-            });
+            setTimeout(function() {
+              el.animate({
+                textShadowBlur:20,
+                opacity: 0
+              }, settings.speed / 2, function() {
+
+                ind = _Util.getNextIndex(settings.shuffle, ind, length);
+
+                el.html(array[ind]).animate({
+                  textShadowBlur:0,
+                  opacity: 1
+                }, settings.speed / 2 );
+              });
+            }, settings.delay);
           break;
           
           case 'flip':
-            if(el.find(".back").length > 0) {
-              el.html(el.find(".back").html())
-            }
-          
-            var initial = el.text()
-            var index = $.inArray(initial, array)
-            if((index + 1) == array.length) index = -1
+            setTimeout(function() {
+              if(el.find(".back").length > 0) {
+                el.html(el.find(".back").html())
+              }
             
-            el.html("");
-            $("<span class='front'>" + initial + "</span>").appendTo(el);
-            $("<span class='back'>" + array[index + 1] + "</span>").appendTo(el);
-            el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip").show().css({
-              "-webkit-transform": " rotateY(-180deg)",
-              "-moz-transform": " rotateY(-180deg)",
-              "-o-transform": " rotateY(-180deg)",
-              "transform": " rotateY(-180deg)"
-            })
-            
+              var initial = el.html();
+              ind = _Util.getNextIndex(settings.shuffle, ind, length);
+              
+              el.html("");
+              $("<span class='front'>" + initial + "</span>").appendTo(el);
+              $("<span class='back'>" + array[ind] + "</span>").appendTo(el);
+              el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip").show().css({
+                "-webkit-transform": " rotateY(-180deg)",
+                "-moz-transform": " rotateY(-180deg)",
+                "-o-transform": " rotateY(-180deg)",
+                "transform": " rotateY(-180deg)"
+              })
+            }, settings.delay);
           break;
           
           case 'flipUp':
-            if(el.find(".back").length > 0) {
-              el.html(el.find(".back").html())
-            }
-          
-            var initial = el.text()
-            var index = $.inArray(initial, array)
-            if((index + 1) == array.length) index = -1
+            setTimeout(function() {
+              if(el.find(".back").length > 0) {
+                el.html(el.find(".back").html())
+              }
             
-            el.html("");
-            $("<span class='front'>" + initial + "</span>").appendTo(el);
-            $("<span class='back'>" + array[index + 1] + "</span>").appendTo(el);
-            el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip up").show().css({
-              "-webkit-transform": " rotateX(-180deg)",
-              "-moz-transform": " rotateX(-180deg)",
-              "-o-transform": " rotateX(-180deg)",
-              "transform": " rotateX(-180deg)"
-            })
-            
+              var initial = el.html();
+              ind = _Util.getNextIndex(settings.shuffle, ind, length);
+              
+              el.html("");
+              $("<span class='front'>" + initial + "</span>").appendTo(el);
+              $("<span class='back'>" + array[ind] + "</span>").appendTo(el);
+              el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip up").show().css({
+                "-webkit-transform": " rotateX(-180deg)",
+                "-moz-transform": " rotateX(-180deg)",
+                "-o-transform": " rotateX(-180deg)",
+                "transform": " rotateX(-180deg)"
+              })
+            }, settings.delay);
           break;
           
           case 'flipCube':
-            if(el.find(".back").length > 0) {
-              el.html(el.find(".back").html())
-            }
-          
-            var initial = el.text()
-            var index = $.inArray(initial, array)
-            if((index + 1) == array.length) index = -1
+            setTimeout(function() {
+              if(el.find(".back").length > 0) {
+                el.html(el.find(".back").html())
+              }
             
-            el.html("");
-            $("<span class='front'>" + initial + "</span>").appendTo(el);
-            $("<span class='back'>" + array[index + 1] + "</span>").appendTo(el);
-            el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip cube").show().css({
-              "-webkit-transform": " rotateY(180deg)",
-              "-moz-transform": " rotateY(180deg)",
-              "-o-transform": " rotateY(180deg)",
-              "transform": " rotateY(180deg)"
-            })
-            
+              var initial = el.html();
+              ind = _Util.getNextIndex(settings.shuffle, ind, length);
+              
+              el.html("");
+              $("<span class='front'>" + initial + "</span>").appendTo(el);
+              $("<span class='back'>" + array[ind] + "</span>").appendTo(el);
+              el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip cube").show().css({
+                "-webkit-transform": " rotateY(180deg)",
+                "-moz-transform": " rotateY(180deg)",
+                "-o-transform": " rotateY(180deg)",
+                "transform": " rotateY(180deg)"
+              })
+            }, settings.delay);
           break;
           
           case 'flipCubeUp':
-            if(el.find(".back").length > 0) {
-              el.html(el.find(".back").html())
-            }
-          
-            var initial = el.text()
-            var index = $.inArray(initial, array)
-            if((index + 1) == array.length) index = -1
+            setTimeout(function() {
+              if(el.find(".back").length > 0) {
+                el.html(el.find(".back").html())
+              }
             
-            el.html("");
-            $("<span class='front'>" + initial + "</span>").appendTo(el);
-            $("<span class='back'>" + array[index + 1] + "</span>").appendTo(el);
-            el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip cube up").show().css({
-              "-webkit-transform": " rotateX(180deg)",
-              "-moz-transform": " rotateX(180deg)",
-              "-o-transform": " rotateX(180deg)",
-              "transform": " rotateX(180deg)"
-            })
-            
+              var initial = el.html();
+              ind = _Util.getNextIndex(settings.shuffle, ind, length);
+              
+              el.html("");
+              $("<span class='front'>" + initial + "</span>").appendTo(el);
+              $("<span class='back'>" + array[ind] + "</span>").appendTo(el);
+              el.wrapInner("<span class='rotating' />").find(".rotating").hide().addClass("flip cube up").show().css({
+                "-webkit-transform": " rotateX(180deg)",
+                "-moz-transform": " rotateX(180deg)",
+                "-o-transform": " rotateX(180deg)",
+                "transform": " rotateX(180deg)"
+              })
+            }, settings.delay);
           break;
           
           case 'spin':
-            if(el.find(".rotating").length > 0) {
-              el.html(el.find(".rotating").html())
-            }
-            index = $.inArray(el.text(), array)
-            if((index + 1) == array.length) index = -1
-            
-            el.wrapInner("<span class='rotating spin' />").find(".rotating").hide().text(array[index + 1]).show().css({
-              "-webkit-transform": " rotate(0) scale(1)",
-              "-moz-transform": "rotate(0) scale(1)",
-              "-o-transform": "rotate(0) scale(1)",
-              "transform": "rotate(0) scale(1)"
-            })
+            setTimeout(function() {
+              if(el.find(".rotating").length > 0) {
+                el.html(el.find(".rotating").html())
+              }
+              ind = _Util.getNextIndex(settings.shuffle, ind, length);
+              
+              el.wrapInner("<span class='rotating spin' />").find(".rotating").hide().html(array[ind]).show().css({
+                "-webkit-transform": " rotate(0) scale(1)",
+                "-moz-transform": "rotate(0) scale(1)",
+                "-o-transform": "rotate(0) scale(1)",
+                "transform": "rotate(0) scale(1)"
+              })
+            }, settings.delay);
           break;
           
           case 'fade':
-            el.fadeOut(settings.speed, function() {
-              index = $.inArray(el.text(), array)
-              if((index + 1) == array.length) index = -1
-              el.text(array[index + 1]).fadeIn(settings.speed);
-            });
+            setTimeout(function() {
+              el.fadeOut(settings.speed/2, function() {
+                ind = _Util.getNextIndex(settings.shuffle, ind, length);
+                el.html(array[ind]).fadeIn(settings.speed/2);
+              });
+            }, settings.delay);
           break;
         }
       };
-      setInterval(rotate, settings.speed);
+      rotate();
+      setInterval(rotate, intervalSpeed);
     });
   }
   
 }(window.jQuery);
-
-
