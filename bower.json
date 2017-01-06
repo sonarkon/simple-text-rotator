@@ -1,10 +1,9 @@
 {
   "name": "simple-text-rotator",
-  "version": "1.1.0",
+  "version": "1.0.0",
   "main": "jquery.simple-text-rotator.js",
-            "simpletextrotator.css",
   "ignore": ["demo.html"],
   "dependencies": {
-  "jQuery": ">=2.0.0"
-   }
- } 
+    "jQuery": ">=2.0.0"
+  }
+}
