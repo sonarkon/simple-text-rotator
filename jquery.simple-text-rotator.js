@@ -13,7 +13,6 @@
 jQuery(document).ready(function($){
   //you can now use $ as your jQuery object.
   var body = $( 'body' );
-});
 
 !function($){
 
@@ -224,3 +223,5 @@ jQuery(document).ready(function($){
   }
   
 }(window.jQuery);
+  });
+
