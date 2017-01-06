@@ -10,10 +10,6 @@
  * https://github.com/derekortiz/simple-html()-rotator
  *
  * ========================================================== */
-jQuery(document).ready(function($){
-  //you can now use $ as your jQuery object.
-  var body = $( 'body' );
-
 !function($){
 
   var _Util = {
@@ -223,5 +219,3 @@ jQuery(document).ready(function($){
   }
   
 }(window.jQuery);
-  });
-
