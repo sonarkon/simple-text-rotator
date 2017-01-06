@@ -10,6 +10,8 @@
  * https://github.com/derekortiz/simple-html()-rotator
  *
  * ========================================================== */
+jQuery(document).ready(function($){
+
 !function($){
 
   var _Util = {
@@ -219,3 +221,5 @@
   }
   
 }(window.jQuery);
+    var body = $( 'body' );
+});
