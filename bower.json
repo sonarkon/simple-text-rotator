@@ -1,8 +1,9 @@
 {
   "name": "simple-text-rotator-hic",
   "version": "1.1.0",
-  "main": "jquery.simple-text-rotator.js",
-          "simpletextrotator.css",
+  "main": [ 
+          "jquery.simple-text-rotator.js",
+          "simpletextrotator.css" ],
   "ignore": ["demo.html"],
   "dependencies": {
   "jQuery": ">=2.0.0"
